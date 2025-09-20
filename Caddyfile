@@ -1,0 +1,57 @@
+{
+    auto_https off
+    admin off
+}
+
+:80 {
+    # API routes
+    handle_path /api/* {
+        reverse_proxy api:8080
+    }
+
+    # Metrics endpoint
+    handle_path /metrics {
+        reverse_proxy api:8080
+    }
+
+    # Health check
+    handle_path /health {
+        reverse_proxy api:8080
+    }
+
+    # Everything else goes to the UI
+    handle {
+        reverse_proxy ui:3000
+    }
+
+    # Enable compression
+    encode gzip
+
+    # Security headers
+    header {
+        # Disable FLoC tracking
+        Permissions-Policy interest-cohort=()
+
+        # Enable XSS filtering
+        X-XSS-Protection "1; mode=block"
+
+        # Prevent MIME sniffing
+        X-Content-Type-Options nosniff
+
+        # Deny framing
+        X-Frame-Options DENY
+
+        # HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+    }
+}
