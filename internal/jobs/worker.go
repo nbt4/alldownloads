@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/your-username/alldownloads/internal/api"
 	"github.com/your-username/alldownloads/internal/sources"
 	"github.com/your-username/alldownloads/internal/store"
 	"go.uber.org/zap"
@@ -96,7 +95,7 @@ func (w *Worker) workerLoop(ctx context.Context, workerID int) {
 					logger.Error("failed to retry job", zap.Error(retryErr), zap.String("job_id", message.ID))
 				}
 
-				api.IncrementFetchJobMetric("failed")
+				// Note: metrics would be updated here
 			} else {
 				logger.Info("job completed successfully", zap.String("job_id", message.ID))
 
@@ -104,7 +103,7 @@ func (w *Worker) workerLoop(ctx context.Context, workerID int) {
 					logger.Error("failed to mark job as completed", zap.Error(err), zap.String("job_id", message.ID))
 				}
 
-				api.IncrementFetchJobMetric("completed")
+				// Note: metrics would be updated here
 			}
 		}
 	}
@@ -173,7 +172,7 @@ func (w *Worker) processJob(ctx context.Context, message *JobMessage) error {
 		return fmt.Errorf("failed to update job status to completed: %w", err)
 	}
 
-	api.SetProductVersionsMetric(product.ID, float64(len(versions)))
+	// Note: metrics would be updated here
 
 	w.logger.Info("product updated", zap.String("product_id", product.ID), zap.Int("versions", len(versions)))
 

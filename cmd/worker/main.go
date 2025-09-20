@@ -55,7 +55,7 @@ func main() {
 		}
 	}()
 
-	scheduler := cron.New(cron.WithLogger(cron.VerbosePrintfLogger(logger.Sugar())))
+	scheduler := cron.New()
 
 	_, err = scheduler.AddFunc(cfg.RefreshCron, func() {
 		logger.Info("scheduled refresh triggered")
