@@ -269,8 +269,13 @@ make test
 Pre-built images are available on Docker Hub:
 
 ```bash
+# Latest stable release
 docker pull nbt4/alldownloads-api:latest     # REST API service (36.6MB)
 docker pull nbt4/alldownloads-worker:latest  # Background worker (24.2MB)
+
+# Specific version (recommended for production)
+docker pull nbt4/alldownloads-api:1.0.0
+docker pull nbt4/alldownloads-worker:1.0.0
 ```
 
 **Production-ready features:**
@@ -279,6 +284,30 @@ docker pull nbt4/alldownloads-worker:latest  # Background worker (24.2MB)
 - ✅ Alpine-based minimal images
 - ✅ Health checks built-in
 - ✅ Non-root user execution
+- ✅ External proxy network support
+
+### 🌐 Reverse Proxy Integration
+
+AllDownloads supports external reverse proxy networks (like Traefik, Nginx Proxy Manager, etc.):
+
+**Prerequisites:**
+```bash
+# Create external proxy network if it doesn't exist
+docker network create proxy
+```
+
+**Configuration:**
+The UI container automatically connects to both the internal `alldownloads-network` and external `proxy` network, allowing seamless integration with your existing reverse proxy setup.
+
+**Example with Traefik:**
+```yaml
+# In your Traefik configuration
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.alldownloads.rule=Host(`downloads.yourdomain.com`)"
+  - "traefik.http.services.alldownloads.loadbalancer.server.port=80"
+  - "traefik.docker.network=proxy"
+```
 
 ## 📊 Monitoring
 

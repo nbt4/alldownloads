@@ -98,6 +98,9 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+    networks:
+      - default
+      - proxy
 
 volumes:
   postgres_data:
@@ -108,3 +111,5 @@ volumes:
 networks:
   default:
     name: alldownloads-network
+  proxy:
+    external: true

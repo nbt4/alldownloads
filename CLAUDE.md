@@ -1,0 +1,1 @@
+- Always push your changes to github and edit the README file, so its always up to date. Also always push your changes to dockerhub with the newest images and give them a specific version tag and the latest tag.

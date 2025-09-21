@@ -3,6 +3,8 @@ version: '3.8'
 networks:
   alldownloads-network:
     driver: bridge
+  proxy:
+    external: true
 
 services:
   # PostgreSQL Database
@@ -126,6 +128,7 @@ services:
       - "${UI_PORT:-3000}:80"
     networks:
       - alldownloads-network
+      - proxy
     restart: unless-stopped
     deploy:
       resources:

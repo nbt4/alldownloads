@@ -122,6 +122,9 @@ services:
           memory: 64M
         reservations:
           memory: 16M
+    networks:
+      - default
+      - proxy
 
   # Reverse Proxy
   proxy:
@@ -176,3 +179,5 @@ volumes:
 networks:
   default:
     name: alldownloads-network
+  proxy:
+    external: true
