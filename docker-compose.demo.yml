@@ -51,7 +51,7 @@ services:
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://localhost}
       RATE_LIMIT_REQUESTS_PER_MINUTE: ${RATE_LIMIT_REQUESTS_PER_MINUTE:-60}
     ports:
-      - "8080:8080"
+      - "9780:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -94,7 +94,7 @@ services:
     volumes:
       - ./demo:/usr/share/nginx/html:ro
     ports:
-      - "3000:80"
+      - "9779:80"
     depends_on:
       - api
     restart: unless-stopped

@@ -152,8 +152,8 @@
         // Helper function to open API URLs
         function openApiUrl(path) {
             let apiUrl = path;
-            if (window.location.port === '3000') {
-                apiUrl = `${window.location.protocol}//${window.location.hostname}:8080${path}`;
+            if (window.location.port === '9779') {
+                apiUrl = `${window.location.protocol}//${window.location.hostname}:9780${path}`;
             }
             window.open(apiUrl, '_blank');
         }
@@ -163,9 +163,9 @@
             try {
                 // Try relative URL first (works with reverse proxy), fallback to direct API
                 let apiUrl = '/api/products';
-                if (window.location.port === '3000') {
+                if (window.location.port === '9779') {
                     // Direct access to UI, use API directly
-                    apiUrl = `${window.location.protocol}//${window.location.hostname}:8080/api/products`;
+                    apiUrl = `${window.location.protocol}//${window.location.hostname}:9780/api/products`;
                 }
                 console.log('Fetching from:', apiUrl);
                 const response = await fetch(apiUrl);
@@ -222,8 +222,8 @@
             try {
                 console.log('Opening modal for product:', productId);
                 let apiUrl = `/api/products/${productId}`;
-                if (window.location.port === '3000') {
-                    apiUrl = `${window.location.protocol}//${window.location.hostname}:8080/api/products/${productId}`;
+                if (window.location.port === '9779') {
+                    apiUrl = `${window.location.protocol}//${window.location.hostname}:9780/api/products/${productId}`;
                 }
 
                 console.log('Fetching product details from:', apiUrl);

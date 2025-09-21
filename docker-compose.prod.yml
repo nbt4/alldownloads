@@ -68,7 +68,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info}
       LOG_FORMAT: ${LOG_FORMAT:-json}
     ports:
-      - "${API_PORT:-8080}:8080"
+      - "${API_PORT:-9780}:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -125,7 +125,7 @@ services:
     volumes:
       - ./demo:/usr/share/nginx/html
     ports:
-      - "${UI_PORT:-3000}:80"
+      - "${UI_PORT:-9779}:80"
     networks:
       - alldownloads-network
       - proxy

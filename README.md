@@ -96,9 +96,9 @@ docker compose up -d
    ```
 
 4. **Access the application**
-   - **Web Interface**: http://localhost:3000
-   - **API Endpoints**: http://localhost:8080/api
-   - **Metrics**: http://localhost:8080/metrics
+   - **Web Interface**: http://localhost:9779
+   - **API Endpoints**: http://localhost:9780/api
+   - **Metrics**: http://localhost:9780/metrics
 
 ### Development Setup
 
@@ -158,7 +158,8 @@ cd ui && npm install && npm run dev
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DOMAIN` | `localhost` | Domain name for the application |
-| `PORT` | `8080` | API server port |
+| `API_PORT` | `9780` | API server external port |
+| `UI_PORT` | `9779` | UI server external port |
 | `AUTH_TOKEN` | `change-me` | Bearer token for API authentication |
 | `DB_URL` | `postgres://...` | PostgreSQL connection string |
 | `REDIS_URL` | `redis://...` | Redis connection string |
