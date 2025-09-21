@@ -1,0 +1,32 @@
+# Fast development build for quick startup
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files only
+COPY package.json ./
+
+# Install dependencies (skip the slow ones for now)
+RUN npm install --legacy-peer-deps --no-audit --no-fund
+
+# Copy source code
+COPY . .
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Change ownership
+RUN chown -R nextjs:nodejs /app
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Use dev mode for instant startup
+CMD ["npm", "run", "dev"]

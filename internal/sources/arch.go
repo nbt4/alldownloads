@@ -23,47 +23,54 @@ func NewArchFetcher() *ArchFetcher {
 func (f *ArchFetcher) Fetch(ctx context.Context) ([]*store.ProductVersion, error) {
 	var versions []*store.ProductVersion
 
-	baseURL := "https://archlinux.org/download/"
-	resp, err := f.client.Get(ctx, baseURL)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch Arch Linux download page: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
+	// Use direct mirror URLs since main page has magnet links
+	mirrors := []string{
+		"https://mirror.rackspace.com/archlinux/iso/latest/archlinux-x86_64.iso",
+		"https://mirrors.kernel.org/archlinux/iso/latest/archlinux-x86_64.iso",
 	}
 
-	html := string(body)
+	var downloadURL string
+	var fileSize int64
 
-	mirrorRegex := regexp.MustCompile(`href="([^"]*archlinux-[^"]*\.iso)"`)
-	mirrorMatches := mirrorRegex.FindAllStringSubmatch(html, -1)
-
-	if len(mirrorMatches) == 0 {
-		return nil, fmt.Errorf("no Arch Linux ISO links found")
+	// Try mirrors until we find one that works
+	for _, mirror := range mirrors {
+		resp, err := f.client.Head(ctx, mirror)
+		if err == nil && resp.StatusCode == 200 {
+			downloadURL = mirror
+			if resp.ContentLength > 0 {
+				fileSize = resp.ContentLength
+			}
+			resp.Body.Close()
+			break
+		}
+		if resp != nil {
+			resp.Body.Close()
+		}
 	}
 
-	downloadURL := mirrorMatches[0][1]
-	if !strings.HasPrefix(downloadURL, "http") {
-		return nil, fmt.Errorf("invalid download URL: %s", downloadURL)
+	if downloadURL == "" {
+		return nil, fmt.Errorf("no working Arch Linux mirrors found")
 	}
 
-	filename := extractFilename(downloadURL)
-
-	versionRegex := regexp.MustCompile(`archlinux-([0-9]{4}\.[0-9]{2}\.[0-9]{2})`)
-	versionMatch := versionRegex.FindStringSubmatch(filename)
-
+	filename := "archlinux-x86_64.iso"
 	version := "latest"
-	if len(versionMatch) >= 2 {
-		version = versionMatch[1]
+
+	// Try to get actual version from filename if mirror redirects
+	if resp, err := f.client.Head(ctx, downloadURL); err == nil {
+		if finalURL := resp.Header.Get("Location"); finalURL != "" {
+			if versionRegex := regexp.MustCompile(`archlinux-([0-9]{4}\.[0-9]{2}\.[0-9]{2})`); versionRegex.MatchString(finalURL) {
+				matches := versionRegex.FindStringSubmatch(finalURL)
+				if len(matches) >= 2 {
+					version = matches[1]
+					filename = extractFilename(finalURL)
+				}
+			}
+		}
+		resp.Body.Close()
 	}
 
-	fileSize := getFileSizeFromURL(ctx, f.client, downloadURL)
-
-	checksum, err := f.fetchChecksum(ctx, downloadURL)
-	if err != nil {
-		checksum = ""
+	if fileSize == 0 {
+		fileSize = getFileSizeFromURL(ctx, f.client, downloadURL)
 	}
 
 	pv := &store.ProductVersion{
@@ -71,8 +78,8 @@ func (f *ArchFetcher) Fetch(ctx context.Context) ([]*store.ProductVersion, error
 		Platform:     store.PlatformLinux,
 		Architecture: store.ArchAMD64,
 		DownloadURL:  downloadURL,
-		Checksum:     checksum,
-		ChecksumType: "sha256",
+		Checksum:     "",
+		ChecksumType: "",
 		FileSize:     fileSize,
 		Filename:     filename,
 		IsLatest:     true,

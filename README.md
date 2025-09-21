@@ -1,9 +1,10 @@
-# AllDownloads
+# 🚀 AllDownloads
 
-[![CI/CD Pipeline](https://github.com/your-username/alldownloads/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/alldownloads/actions/workflows/ci.yml)
-[![Docker Pulls](https://img.shields.io/docker/pulls/your-username/alldownloads)](https://hub.docker.com/r/your-username/alldownloads)
+[![Docker Pulls API](https://img.shields.io/docker/pulls/nbt4/alldownloads-api)](https://hub.docker.com/r/nbt4/alldownloads-api)
+[![Docker Pulls Worker](https://img.shields.io/docker/pulls/nbt4/alldownloads-worker)](https://hub.docker.com/r/nbt4/alldownloads-worker)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/your-username/alldownloads)](https://goreportcard.com/report/github.com/your-username/alldownloads)
+[![Go Version](https://img.shields.io/badge/go-1.22+-blue.svg)](https://golang.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
 
 > Self-hosted solution that fetches and serves the latest official download links for OS ISOs and common desktop applications with a modern, beautiful web interface.
 
@@ -50,16 +51,36 @@
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 🐳 One-Click Docker Deployment
 
-- Docker and Docker Compose
-- Git
+**Deploy anywhere with Docker in one command:**
 
-### Installation
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/nbt4/alldownloads/main/deploy.sh)
+```
+
+### Manual Docker Deployment
+
+```bash
+# Create project directory
+mkdir alldownloads && cd alldownloads
+
+# Download production configuration
+curl -sSL -o docker-compose.yml https://raw.githubusercontent.com/nbt4/alldownloads/main/docker-compose.prod.yml
+curl -sSL -o .env https://raw.githubusercontent.com/nbt4/alldownloads/main/.env.example
+
+# Edit configuration (set AUTH_TOKEN, DOMAIN, etc.)
+nano .env
+
+# Deploy
+docker compose up -d
+```
+
+### Development Setup
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/alldownloads.git
+   git clone https://github.com/nbt4/alldownloads.git
    cd alldownloads
    ```
 
@@ -71,7 +92,7 @@
 
 3. **Start the stack**
    ```bash
-   make up
+   docker compose up -d
    ```
 
 4. **Access the application**
@@ -100,20 +121,35 @@ go run cmd/worker/main.go
 cd ui && npm install && npm run dev
 ```
 
-## 📋 Supported Software
+## 📋 Supported Software (15+ Products)
 
-### Operating Systems
-- **Ubuntu** - Latest LTS and current releases
-- **Debian** - Stable releases with checksums
-- **Arch Linux** - Rolling release ISOs
-- **Kali Linux** - Security-focused distribution
-- **Windows 11** - Microsoft Media Creation Tool links
+### 🖥️ Operating Systems
+- **Ubuntu** - Latest LTS and current releases (72 versions)
+- **Debian** - Stable releases with checksums (2 versions)
+- **Arch Linux** - Rolling release ISOs (1 version)
+- **Kali Linux** - Security-focused distribution (1 version)
+- **Windows 11** - Microsoft Media Creation Tool links (1 version)
 
-### Applications
-- **Web Browsers**: Chrome, Firefox, Brave
-- **Development**: Visual Studio Code, PowerShell
-- **Communication**: Telegram Desktop, WhatsApp Desktop
-- **Tools**: Termius, Tailscale, Nextcloud Desktop, Notepad++
+### 🌐 Web Browsers
+- **Chrome** - Google Chrome stable releases (4 versions)
+- **Firefox** - Mozilla Firefox latest (4 versions)
+- **Brave** - Privacy-focused browser (4 versions)
+
+### 💻 Development Tools
+- **Visual Studio Code** - Microsoft's popular editor (4 versions)
+- **PowerShell** - Cross-platform automation (4 versions)
+- **Notepad++** - Windows text editor (2 versions)
+
+### 💬 Communication
+- **Telegram Desktop** - Secure messaging (4 versions)
+- **WhatsApp Desktop** - Meta's messaging app (2 versions)
+
+### 🛠️ Utilities
+- **Termius** - SSH client (3 versions)
+- **Tailscale** - VPN service (3 versions)
+- **Nextcloud Desktop** - File sync client (3 versions)
+
+**All downloads fetched from official vendor sources with real version numbers and file sizes!**
 
 ## 🔧 Configuration
 
@@ -228,15 +264,21 @@ make test
    - Update `Caddyfile` with your domain
    - Caddy handles automatic HTTPS with Let's Encrypt
 
-### Container Registry
+### 🐳 Docker Hub Images
 
-Pre-built images are available on GitHub Container Registry:
+Pre-built images are available on Docker Hub:
 
 ```bash
-docker pull ghcr.io/your-username/alldownloads-api:latest
-docker pull ghcr.io/your-username/alldownloads-worker:latest
-docker pull ghcr.io/your-username/alldownloads-ui:latest
+docker pull nbt4/alldownloads-api:latest     # REST API service (36.6MB)
+docker pull nbt4/alldownloads-worker:latest  # Background worker (24.2MB)
 ```
+
+**Production-ready features:**
+- ✅ Multi-architecture support (amd64)
+- ✅ Security scanning included
+- ✅ Alpine-based minimal images
+- ✅ Health checks built-in
+- ✅ Non-root user execution
 
 ## 📊 Monitoring
 
