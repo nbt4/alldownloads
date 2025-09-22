@@ -62,19 +62,33 @@ bash <(curl -sSL https://raw.githubusercontent.com/nbt4/alldownloads/main/deploy
 ### Manual Docker Deployment
 
 ```bash
-# Create project directory
-mkdir alldownloads && cd alldownloads
+# Prerequisites
+sudo apt update
+sudo apt install docker.io docker-compose-plugin
+sudo usermod -aG docker $USER
+# Log out and back in for group changes to take effect
 
-# Download production configuration
-curl -sSL -o docker-compose.yml https://raw.githubusercontent.com/nbt4/alldownloads/main/docker-compose.prod.yml
-curl -sSL -o .env https://raw.githubusercontent.com/nbt4/alldownloads/main/.env.example
+# Clone repository
+git clone https://github.com/nbt4/alldownloads.git
+cd alldownloads
 
-# Edit configuration (set AUTH_TOKEN, DOMAIN, etc.)
-nano .env
+# Create external proxy network
+docker network create proxy
 
-# Deploy
-docker compose up -d
+# Configure environment
+cp .env.example .env
+nano .env  # Set AUTH_TOKEN, DOMAIN, CORS_ORIGINS, etc.
+
+# Deploy with production compose file
+docker compose -f docker-compose.prod.yml up -d
+
+# Wait for initialization (2-3 minutes)
+docker compose -f docker-compose.prod.yml logs -f
 ```
+
+**Access your deployment:**
+- UI: `http://your-server-ip:9779`
+- API: `http://your-server-ip:9780`
 
 ### Development Setup
 
