@@ -17,7 +17,7 @@ services:
       POSTGRES_PASSWORD: alldl
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./migrations:/docker-entrypoint-initdb.d
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
       - alldownloads-network
     healthcheck:
